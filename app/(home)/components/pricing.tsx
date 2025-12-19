@@ -4,11 +4,11 @@ import { PricingCard } from "./pricing-card";
 export function Pricing() {
   return (
     <div className="max-w-7xl mx-auto container">
-      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold max-w-2xl">
+      <h1 className="text-2xl sm:text-3xl w-full md:text-4xl font-bold max-w-2xl text-center">
         One tool for your whole company. Free for teams to try.
       </h1>
-      <p className="uppercase opacity-70">TRUSTED BY TEAMS AT</p>
-      <div className="flex gap-4 flex-row flex-wrap mt-4">
+      <p className="uppercase opacity-70 text-center">TRUSTED BY TEAMS AT</p>
+      <div className="flex gap-4 flex-row flex-wrap mt-4 justify-center">
         {teams.map((team, idx) => (
           <Image width={50} height={50} key={idx} alt="teams" src={team} />
         ))}
