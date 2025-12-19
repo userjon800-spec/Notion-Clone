@@ -19,8 +19,18 @@ import { useUser } from "@clerk/clerk-react";
 import Loader from "@/components/ui/loader";
 import { useMediaQuery } from "usehooks-ts";
 import DocumentList from "./document-list";
+import Item from "./item";
+import UserBox from "./user-box";
+import { Progress } from "@/components/ui/progress";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import TrashBox from "./trash-box";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
+  const createDocument = useMutation(api.document.createDocument);
   const { isAuthenticated, isLoading } = useConvexAuth();
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
@@ -78,6 +88,12 @@ const Sidebar = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
+  const onCreateDocument = () => {
+    createDocument({
+      title: "Nomsiz",
+    });
+  };
+  const arr = [1];
   return (
     <>
       <div
@@ -99,24 +115,24 @@ const Sidebar = () => {
           <ChevronsLeft className="h-6 w-6" />
         </div>
         <div>
-          {/* <UserBox />
+          <UserBox />
           <Item
             label="Search"
             icon={Search}
             isSearch
-            onClick={() => search.onOpen()}
+            // onClick={() => search.onOpen()}
           />
           <Item
             label="Settings"
             icon={Settings}
             isSettings
-            onClick={() => settings.onOpen()}
-          /> */}
-          {/* <Item label="New document" icon={Plus} onClick={onCreateDocument} /> */}
+            // onClick={() => settings.onOpen()}
+          />
+          <Item label="New document" icon={Plus} onClick={onCreateDocument} />
         </div>
         <div className="mt-4">
-           <DocumentList />
-          {/*<Item onClick={onCreateDocument} icon={Plus} label="Add a page" />
+          <DocumentList />
+          <Item onClick={onCreateDocument} icon={Plus} label="Add a page" />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
@@ -127,7 +143,7 @@ const Sidebar = () => {
             >
               <TrashBox />
             </PopoverContent>
-          </Popover> */}
+          </Popover>
         </div>
         <div
           className="absolute right-0 top-0 w-1 h-full cursor-ew-resize bg-primary/10 opacity-0 group-hover/sidebar:opacity-100 transition"
@@ -143,8 +159,10 @@ const Sidebar = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1 text-[13px]">
                   <Rocket />
-                  <p className="opacity-70 font-bold">{/*plan*/} plan</p>
+                  {/* <p className="opacity-70 font-bold">{plan} plan</p> */}
+                  <p className="opacity-70 font-bold">Free plan</p>
                 </div>
+                <p className="text-[13px] opacity-70">{arr.length}/3</p>
                 {/* {plan === "Free" ? (
                   <p className="text-[13px] opacity-70">
                     {documents?.length}/3
@@ -155,6 +173,10 @@ const Sidebar = () => {
                   </p>
                 )} */}
               </div>
+              <Progress
+                value={arr.length >= 3 ? 100 : arr.length * 33.33}
+                className="mt-2"
+              />
               {/* {plan === "Free" && (
                 <Progress
                   value={

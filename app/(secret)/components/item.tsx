@@ -6,13 +6,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation } from "convex/react";
 import {
   ChevronDown,
   ChevronRight,
+  LucideIcon,
   MoreHorizontal,
   Plus,
   Trash,
@@ -23,9 +26,27 @@ interface ItemProps {
   label: string;
   level?: number;
   expanded?: boolean;
+  active?: boolean;
+  icon?: LucideIcon;
+  documentIcon?: string;
+  isSearch?: boolean;
+  isSettings?: boolean;
   onExpand?: () => void;
+  onClick?: () => void;
 }
-const Item = ({ label, expanded, id, level, onExpand }: ItemProps) => {
+const Item = ({
+  label,
+  expanded,
+  id,
+  level,
+  onExpand,
+  active,
+  documentIcon,
+  isSearch,
+  isSettings,
+  onClick,
+  icon:Icon,
+}: ItemProps) => {
   const { user } = useUser();
   const createDocument = useMutation(api.document.createDocument);
   const onCreateDocument = (
@@ -36,11 +57,11 @@ const Item = ({ label, expanded, id, level, onExpand }: ItemProps) => {
     createDocument({
       title: "Nomsiz",
       parentDocument: id,
-    }).then(docs=>{
-        if (!expanded) {
-            onExpand?.();
-        }
-    })
+    }).then((docs) => {
+      if (!expanded) {
+        onExpand?.();
+      }
+    });
   };
   const handleExpand = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -51,8 +72,10 @@ const Item = ({ label, expanded, id, level, onExpand }: ItemProps) => {
     <div
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={
-        "group min-h-6.75 text-sm py-4 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium"
+        cn("group min-h-6.75 text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",active && 'bg-primary/5 text-primary')
       }
+      role="button"
+      onClick={onClick}
     >
       {!!id && (
         <div
@@ -62,6 +85,13 @@ const Item = ({ label, expanded, id, level, onExpand }: ItemProps) => {
         >
           <ChevronIcon className="h-4 w-4 shrink-0 text-muted-foreground/50" />
         </div>
+      )}
+      {documentIcon ? (
+        <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
+      ) : (
+        Icon && (
+          <Icon className="shrink-0 h-4.5 w-4.5 mr-2 text-muted-foreground" />
+        )
       )}
       <span className="truncate">{label}</span>
       {!!id && (
@@ -105,3 +135,14 @@ const Item = ({ label, expanded, id, level, onExpand }: ItemProps) => {
 };
 
 export default Item;
+Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
+  return (
+    <div
+      style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
+      className="flex gap-x-2 py-0.75"
+    >
+      <Skeleton className="h-4 w-4" />
+      <Skeleton className="h-4 w-[30%]" />
+    </div>
+  );
+};
