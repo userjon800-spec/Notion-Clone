@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { Loader2 } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
-let loaderVariants = cva("text-muted-foreground animate-spin", {
+const loaderVariants = cva("text-muted-foreground animate-spin", {
   variants: {
     size: {
       default: "h-4 w-4",
