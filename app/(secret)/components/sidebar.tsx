@@ -18,6 +18,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/clerk-react";
 import Loader from "@/components/ui/loader";
 import { useMediaQuery } from "usehooks-ts";
+import DocumentList from "./document-list";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -114,8 +115,8 @@ const Sidebar = () => {
           {/* <Item label="New document" icon={Plus} onClick={onCreateDocument} /> */}
         </div>
         <div className="mt-4">
-          {/* <DocumentList />
-          <Item onClick={onCreateDocument} icon={Plus} label="Add a page" />
+           <DocumentList />
+          {/*<Item onClick={onCreateDocument} icon={Plus} label="Add a page" />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
