@@ -28,12 +28,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import TrashBox from "./trash-box";
+import { toast } from "sonner";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
   const createDocument = useMutation(api.document.createDocument);
   const { isAuthenticated, isLoading } = useConvexAuth();
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
+  let router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
   const isResizing = useRef(false);
@@ -89,8 +91,13 @@ const Sidebar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
   const onCreateDocument = () => {
-    createDocument({
+    const promise = createDocument({
       title: "Nomsiz",
+    }).then((docId) => router.push(`/documents/${docId}`));
+    toast.promise(promise, {
+      loading: "Creating a new document...",
+      success: "Create a new document !",
+      error: "Failed to create a new document",
     });
   };
   const arr = [1];

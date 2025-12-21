@@ -20,7 +20,9 @@ import {
   Plus,
   Trash,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { use } from "react";
+import { toast } from "sonner";
 interface ItemProps {
   id?: Id<"documents">;
   label: string;
@@ -45,10 +47,12 @@ const Item = ({
   isSearch,
   isSettings,
   onClick,
-  icon:Icon,
+  icon: Icon,
 }: ItemProps) => {
   const { user } = useUser();
   const createDocument = useMutation(api.document.createDocument);
+  const archive = useMutation(api.document.archive);
+  const router = useRouter();
   const onCreateDocument = (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
@@ -68,12 +72,23 @@ const Item = ({
     onExpand?.();
   };
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
+  const onArchive = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    if (!id) return;
+    const promise = archive({ id }).then(() => router.push("/documents"));
+    toast.promise(promise, {
+      loading: "Archiving document...",
+      success: "Archived document!",
+      error: "Failed to archive document",
+    });
+  };
   return (
     <div
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
-      className={
-        cn("group min-h-6.75 text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",active && 'bg-primary/5 text-primary')
-      }
+      className={cn(
+        "group min-h-6.75 text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
+        active && "bg-primary/5 text-primary"
+      )}
       role="button"
       onClick={onClick}
     >
@@ -94,6 +109,16 @@ const Item = ({
         )
       )}
       <span className="truncate">{label}</span>
+      {isSearch && (
+        <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          <span className="text-xs">⌘</span>K
+        </kbd>
+      )}
+      {isSettings && (
+        <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+          <span className="text-xs">⌘</span>J
+        </kbd>
+      )}
       {!!id && (
         <div className="ml-auto flex items-center gap-x-2">
           <DropdownMenu>
@@ -111,7 +136,7 @@ const Item = ({
               side="right"
               forceMount
             >
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={onArchive}>
                 <Trash className="h-4 w-4 mr-2" />
                 Delete
               </DropdownMenuItem>
@@ -133,7 +158,6 @@ const Item = ({
     </div>
   );
 };
-
 export default Item;
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (

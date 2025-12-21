@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
@@ -9,13 +8,20 @@ import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 const DocumentPage = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const { user } = useUser();
+  const router = useRouter();
   const createDocument = useMutation(api.document.createDocument);
   const onCreateDocument = () => {
-    createDocument({
+    const promise = createDocument({
       title: "Nomsiz",
+    }).then((docId) => router.push(`/documents/${docId}`));
+    toast.promise(promise, {
+      loading: "Creating a new blank...",
+      success: "Create a new blank !",
+      error: "Failed to create a new blank",
     });
   };
   return (

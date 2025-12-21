@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Id } from "@/convex/_generated/dataModel";
 
 interface DocumentIdPageProps {
@@ -6,9 +6,11 @@ interface DocumentIdPageProps {
     documentId: Id<"documents">;
   };
 }
-const DocumentIdPage = ({params}:DocumentIdPageProps) => {
+const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
+  console.log(params.documentId);
+  
   return <div>
-    {params.documentId}
+    {params.documentId} Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente reiciendis expedita ab numquam. Voluptatibus laudantium, voluptate totam, impedit sapiente eius in dolore quo similique eum, officia rerum laborum ipsum adipisci.
   </div>;
 };
 
