@@ -10,7 +10,7 @@ import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import Loader from "@/components/ui/loader";
 export const Navbar = () => {
-  let { isAuthenticated, isLoading } = useConvexAuth();
+  const { isAuthenticated, isLoading } = useConvexAuth();
   const scrolled = UseScrolled();
   return (
     <div

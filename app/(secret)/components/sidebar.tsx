@@ -29,8 +29,10 @@ import {
 } from "@/components/ui/popover";
 import TrashBox from "./trash-box";
 import { toast } from "sonner";
+import Navbar from "./navbar";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
+    const params = useParams();
   const createDocument = useMutation(api.document.createDocument);
   const { isAuthenticated, isLoading } = useConvexAuth();
   const sidebarRef = useRef<ElementRef<"div">>(null);
@@ -206,16 +208,7 @@ const Sidebar = () => {
         )}
         ref={navbarRef}
       >
-        <nav className={cn("bg-transparent px-3 py-2 w-full")}>
-          {isCollapsed && (
-            <MenuIcon
-              className="h-6 w-6 text-muted-foreground cursor-pointer"
-              role="button"
-              onClick={reset}
-            />
-          )}
-        </nav>
-        {/* {!!params.documentId ? (
+        {!!params.documentId ? (
           <Navbar isCollapsed={isCollapsed} reset={reset} />
         ) : (
           <nav className={cn("bg-transparent px-3 py-2 w-full")}>
@@ -227,7 +220,7 @@ const Sidebar = () => {
               />
             )}
           </nav>
-        )} */}
+        )}
       </div>
     </>
   );

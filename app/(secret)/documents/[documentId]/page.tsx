@@ -1,17 +1,13 @@
 "use client";
 import { Id } from "@/convex/_generated/dataModel";
+import { useParams } from "next/navigation";
 
-interface DocumentIdPageProps {
-  params: {
-    documentId: Id<"documents">;
-  };
-}
-const DocumentIdPage = ({ params }: DocumentIdPageProps) => {
-  console.log(params.documentId);
+const DocumentIdPage = () => {
+  const params = useParams();
+  const documentId = params.documentId as Id<"documents">;
+  console.log(documentId);
   
-  return <div>
-    {params.documentId} Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente reiciendis expedita ab numquam. Voluptatibus laudantium, voluptate totam, impedit sapiente eius in dolore quo similique eum, officia rerum laborum ipsum adipisci.
-  </div>;
+  return <div className="mt-12">{documentId}</div>;
 };
 
 export default DocumentIdPage;

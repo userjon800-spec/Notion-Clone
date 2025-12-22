@@ -9,12 +9,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Id } from "@/convex/_generated/dataModel";
-
 const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
   const documents = useQuery(api.document.getTrashDocuments);
   const remove = useMutation(api.document.remove);
+  const restore = useMutation(api.document.restore);
   const [search, setSearch] = useState("");
   if (documents === undefined) {
     return (
@@ -34,8 +34,16 @@ const TrashBox = () => {
       error: "Failed to remove document",
     });
     if (params.documentId === documentId) {
-      router.push('/documents')
+      router.push("/documents");
     }
+  };
+  const onRestore = (documentId: Id<"documents">) => {
+    const promise = restore({ id: documentId });
+    toast.promise(promise, {
+      loading: "Restoring document...",
+      success: "Restored document!",
+      error: "Failed to restore document",
+    });
   };
   return (
     <div className="text-sm">
@@ -64,7 +72,7 @@ const TrashBox = () => {
             <div
               className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
               role="button"
-              // onClick={() => onRestore(document._id)}
+              onClick={() => onRestore(document._id)}
             >
               <Undo className="h-4 w-4 text-muted-foreground" />
             </div>

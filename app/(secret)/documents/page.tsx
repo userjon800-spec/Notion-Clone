@@ -17,7 +17,9 @@ const DocumentPage = () => {
   const onCreateDocument = () => {
     const promise = createDocument({
       title: "Nomsiz",
-    }).then((docId) => router.push(`/documents/${docId}`));
+    }).then((docId) => {
+      router.push(`/documents/${docId}`);
+    });
     toast.promise(promise, {
       loading: "Creating a new blank...",
       success: "Create a new blank !",
