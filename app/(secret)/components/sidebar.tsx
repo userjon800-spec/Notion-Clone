@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prefer-const */
 "use client";
 import { cn } from "@/lib/utils";
 import {
@@ -30,14 +28,18 @@ import {
 import TrashBox from "./trash-box";
 import { toast } from "sonner";
 import Navbar from "./navbar";
+import { useSearch } from "@/hooks/use-search";
+import { useSettings } from "@/hooks/use-settings";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
-    const params = useParams();
+  const params = useParams();
   const createDocument = useMutation(api.document.createDocument);
+  const search = useSearch();
+  const settings = useSettings();
   const { isAuthenticated, isLoading } = useConvexAuth();
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
-  let router = useRouter();
+  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
   const isResizing = useRef(false);
@@ -51,7 +53,7 @@ const Sidebar = () => {
       setTimeout(() => setIsResetting(false), 300);
     }
   };
-  let reset = () => {
+  const reset = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(false);
       setIsResetting(true);
@@ -129,13 +131,13 @@ const Sidebar = () => {
             label="Search"
             icon={Search}
             isSearch
-            // onClick={() => search.onOpen()}
+            onClick={() => search.onOpen()}
           />
           <Item
             label="Settings"
             icon={Settings}
             isSettings
-            // onClick={() => settings.onOpen()}
+            onClick={() => settings.onOpen()}
           />
           <Item label="New document" icon={Plus} onClick={onCreateDocument} />
         </div>

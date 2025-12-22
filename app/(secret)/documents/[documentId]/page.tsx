@@ -4,9 +4,7 @@ import { useParams } from "next/navigation";
 
 const DocumentIdPage = () => {
   const params = useParams();
-  const documentId = params.documentId as Id<"documents">;
-  console.log(documentId);
-  
+  const documentId = params.documentId as Id<"documents">;  
   return <div className="mt-12">{documentId}</div>;
 };
 
