@@ -30,6 +30,16 @@ export default function SettingsModal() {
       toast.error("Something went wrong. Please try again.");
     }
   };
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === "y") {
+        e.preventDefault();
+        onToggle();
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [onToggle]);
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
