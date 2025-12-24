@@ -19,12 +19,6 @@ const DocumentIdPage = () => {
     () => dynamic(() => import("@/components/shared/editor"), { ssr: false }),
     []
   );
-  const onChange = (value: string) => {
-     updateFields({
-      id: document._id,
-      content: value,
-    });
-  };
   if (document === undefined)
     return (
       <div>
@@ -40,8 +34,14 @@ const DocumentIdPage = () => {
       </div>
     );
   if (document === null) return null;
+  const onChange = (value: string) => {
+     updateFields({
+      id: document._id,
+      content: value,
+    });
+  };
   return (
-    <div className="mt-13 h-125 pb-40 border border-white">
+    <div className="mt-13 h-125 pb-40 ">
       <Cover url={document.coverImage} />
       <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
         <Toolbar document={document} />

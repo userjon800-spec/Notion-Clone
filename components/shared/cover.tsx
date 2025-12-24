@@ -7,27 +7,32 @@ import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams } from "next/navigation";
 import { Id } from "@/convex/_generated/dataModel";
+import { useCoverImage } from "@/hooks/use-cover-image";
+import { useEdgeStore } from "@/lib/edge-store";
 interface CoverProps {
   url?: string;
   preview?: boolean;
 }
 const Cover = ({ preview, url }: CoverProps) => {
-  const onRemove = async () => {};
+  const { edgestore } = useEdgeStore();
+  const params = useParams();
+  const updateFields = useMutation(api.document.updateFields);
+  const coverImage = useCoverImage();
+  const onRemove = async () => {
+    if (url) {
+      await edgestore.publicFiles.delete({ url });
+    }
+    updateFields({
+      id: params.documentId as Id<"documents">,
+      coverImage: "",
+    });
+  };
   return (
-    <div
-      className={cn(
-        "relative w-full h-[35vh] group",
-        !url && "h-[10vh]",
-        url && "bg-muted"
-      )}
-    >
+    <div className={cn("relative w-full h-[35vh] group", url && "bg-muted")}>
       {!url && (
         <Image
           fill
-          src={
-            // url ??
-            "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?cs=srgb&dl=pexels-souvenirpixels-417074.jpg&fm=jpg"
-          }
+          src={url ?? "/image.jpg"}
           alt="cover"
           className="object-cover"
         />
@@ -38,7 +43,7 @@ const Cover = ({ preview, url }: CoverProps) => {
             size={"sm"}
             variant={"outline"}
             className="text-muted-foreground text-xs"
-            // onClick={() => coverImage.onReplace(url)}
+            onClick={() => coverImage.onReplace(url)}
           >
             <ImageIcon />
             <span>Change cover</span>

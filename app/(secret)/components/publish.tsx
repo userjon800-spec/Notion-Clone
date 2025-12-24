@@ -1,4 +1,3 @@
-
 import { Doc } from "@/convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +16,7 @@ interface PublishProps {
 const Publish = ({ document }: PublishProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
-  
   const url = `${process.env.NEXT_PUBLIC_DOMAIN}/preview/${document._id}`;
-//   console.log(url);
   const updateFields = useMutation(api.document.updateFields);
   const onPublish = () => {
     setIsLoading(true);
