@@ -1,20 +1,28 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useUser } from "@clerk/clerk-react";
-import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 const DocumentPage = () => {
-  const { isAuthenticated, isLoading } = useConvexAuth();
   const { user } = useUser();
   const router = useRouter();
+  const { plan, isLoading } = useSubscription(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    user?.emailAddresses[0]?.emailAddress!
+  );
+  const documents = useQuery(api.document.getAllDocuments);
   const createDocument = useMutation(api.document.createDocument);
   const onCreateDocument = () => {
+    if (documents?.length && documents.length >= 3 && plan === "Free") {
+      toast.error("You can only create 3 documents in the free plan");
+      return;
+    }
     const promise = createDocument({
       title: "Nomsiz",
     }).then((docId) => {

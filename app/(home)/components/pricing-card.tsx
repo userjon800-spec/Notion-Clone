@@ -1,24 +1,51 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
-import { SignInButton } from "@clerk/clerk-react";
+import { SignInButton, useUser } from "@clerk/clerk-react";
+import axios from "axios";
 import { useConvexAuth } from "convex/react";
 import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import { email } from "zod";
 interface PricingCardProps {
   title: string;
   subtitle: string;
   options: string;
   price: string;
+  priceId?: string;
 }
 export function PricingCard({
   options,
   price,
   subtitle,
   title,
+  priceId,
 }: PricingCardProps) {
   const { isAuthenticated, isLoading } = useConvexAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useUser();
+  const router = useRouter();
+  const onSubmit = async () => {
+    if (price === "Free") {
+      router.push("/documents");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const { data } = await axios.post("/api/stripe/subscription", {
+        priceId,
+        email: user?.emailAddresses[0].emailAddress,
+        userId: user?.id,
+      });
+      window.open(data, "_self");
+      setIsSubmitting(false);
+    } catch (error) {
+      setIsSubmitting(false);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
   return (
     <div className="flex flex-col p-6 mx-auto max-w-lg text-center text-gray-900 bg-white rounded-lg border border-gray-100 shadow dark:border-gray-600 xl:p-8 dark:bg-black dark:text-white">
       <h3 className="mb-4 text-2xl font-semibold">{title}</h3>
@@ -32,16 +59,8 @@ export function PricingCard({
         </span>
         <span className="text-gray-500 dark:text-gray-400">/month</span>
       </div>
-      {!isLoading && (
-        <div className="w-full flex justify-center items-center">
-          <Loader />
-        </div>
-      )}
       {isAuthenticated && !isLoading && (
-        <Button
-          // onClick={onSubmit}
-          disabled={isSubmitting}
-        >
+        <Button onClick={onSubmit} disabled={isSubmitting}>
           {isSubmitting ? (
             <>
               <Loader />
@@ -57,7 +76,6 @@ export function PricingCard({
           <Button>Log In</Button>
         </SignInButton>
       )}
-
       <ul role="list" className="space-y-4 text-left mt-8">
         {options.split(", ").map((option) => (
           <li key={option} className="flex items-center space-x-3">

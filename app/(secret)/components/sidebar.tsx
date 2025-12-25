@@ -10,7 +10,7 @@ import {
   Trash,
 } from "lucide-react";
 import { ElementRef, useEffect, useRef, useState } from "react";
-import { useConvexAuth, useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
 import { useUser } from "@clerk/clerk-react";
@@ -30,19 +30,25 @@ import { toast } from "sonner";
 import Navbar from "./navbar";
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
+import { useSubscription } from "@/hooks/use-subscription";
 const Sidebar = () => {
   const isMobile = useMediaQuery("(max-width: 770px)");
   const params = useParams();
   const createDocument = useMutation(api.document.createDocument);
   const search = useSearch();
   const settings = useSettings();
-  const { isAuthenticated, isLoading } = useConvexAuth();
+  const { user } = useUser();
   const sidebarRef = useRef<ElementRef<"div">>(null);
   const navbarRef = useRef<ElementRef<"div">>(null);
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
   const isResizing = useRef(false);
+  const { plan, isLoading } = useSubscription(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    user?.emailAddresses[0]?.emailAddress!
+  );
+  const documents = useQuery(api.document.getAllDocuments);
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(true);
@@ -95,6 +101,10 @@ const Sidebar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
   const onCreateDocument = () => {
+    if (documents?.length && documents.length >= 3 && plan === "Free") {
+      toast.error("You can only create 3 documents in the free plan");
+      return;
+    }
     const promise = createDocument({
       title: "Nomsiz",
     }).then((docId) => router.push(`/documents/${docId}`));
@@ -104,7 +114,6 @@ const Sidebar = () => {
       error: "Failed to create a new document",
     });
   };
-  const arr = [1];
   return (
     <>
       <div
@@ -170,11 +179,9 @@ const Sidebar = () => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-1 text-[13px]">
                   <Rocket />
-                  {/* <p className="opacity-70 font-bold">{plan} plan</p> */}
-                  <p className="opacity-70 font-bold">Free plan</p>
+                  <p className="opacity-70 font-bold">{plan} plan</p>
                 </div>
-                <p className="text-[13px] opacity-70">{arr.length}/3</p>
-                {/* {plan === "Free" ? (
+                {plan === "Free" ? (
                   <p className="text-[13px] opacity-70">
                     {documents?.length}/3
                   </p>
@@ -182,13 +189,9 @@ const Sidebar = () => {
                   <p className="text-[13px] opacity-70">
                     {documents?.length} notes
                   </p>
-                )} */}
+                )}
               </div>
-              <Progress
-                value={arr.length >= 3 ? 100 : arr.length * 33.33}
-                className="mt-2"
-              />
-              {/* {plan === "Free" && (
+              {plan === "Free" && (
                 <Progress
                   value={
                     documents?.length && documents.length >= 3
@@ -197,7 +200,7 @@ const Sidebar = () => {
                   }
                   className="mt-2"
                 />
-              )} */}
+              )}
             </>
           )}
         </div>
@@ -227,5 +230,4 @@ const Sidebar = () => {
     </>
   );
 };
-
 export default Sidebar;

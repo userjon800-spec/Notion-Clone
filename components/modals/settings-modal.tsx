@@ -1,13 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { useSettings } from "@/hooks/use-settings";
 import { ModeToggle } from "../shared/mode-toggle";
 import { Button } from "../ui/button";
@@ -25,6 +18,15 @@ export default function SettingsModal() {
   const onSubmit = async () => {
     setIsSubmitting(true);
     try {
+      const { data } = await axios.post("/api/stripe/manage", {
+        email: user?.emailAddresses[0].emailAddress,
+      });
+      if (!data.status) {
+        setIsSubmitting(false);
+        toast.error("You are not subscribed to any plan.");
+      }
+      window.open(data.url, "_self");
+      setIsSubmitting(false);
     } catch {
       setIsSubmitting(false);
       toast.error("Something went wrong. Please try again.");

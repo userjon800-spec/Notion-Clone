@@ -2,6 +2,7 @@ import ConfirmModal from "@/components/modals/confirm-modal";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useUser } from "@clerk/clerk-react";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
@@ -12,6 +13,11 @@ interface BannerProps {
 const Banner = ({ documentId }: BannerProps) => {
   const router = useRouter();
   const { user } = useUser();
+  const { plan } = useSubscription(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    user?.emailAddresses[0]?.emailAddress!
+  );
+  const documents = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);
   const restore = useMutation(api.document.restore);
   const onRemove = () => {
@@ -21,10 +27,13 @@ const Banner = ({ documentId }: BannerProps) => {
       success: "Removed document!",
       error: "Failed to remove document",
     });
-
     router.push("/documents");
   };
   const onRestore = () => {
+    if (documents?.length && documents.length >= 3 && plan === "Free") {
+      toast.error("You can only create 3 documents in the free plan");
+      return;
+    }
     const promise = restore({ id: documentId });
     toast.promise(promise, {
       loading: "Restoring document...",
@@ -55,5 +64,4 @@ const Banner = ({ documentId }: BannerProps) => {
     </div>
   );
 };
-
 export { Banner };

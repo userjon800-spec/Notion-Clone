@@ -9,10 +9,18 @@ import { useState } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Id } from "@/convex/_generated/dataModel";
+import { useSubscription } from "@/hooks/use-subscription";
+import { useUser } from "@clerk/clerk-react";
 const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
   const documents = useQuery(api.document.getTrashDocuments);
+  const { user } = useUser();
+  const { plan } = useSubscription(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    user?.emailAddresses[0]?.emailAddress!
+  );
+  const AllDocuments = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);
   const restore = useMutation(api.document.restore);
   const [search, setSearch] = useState("");
@@ -38,6 +46,12 @@ const TrashBox = () => {
     }
   };
   const onRestore = (documentId: Id<"documents">) => {
+    if (AllDocuments?.length && AllDocuments.length >= 3 && plan === "Free") {
+      toast.error(
+        "You already have 3 notes. Please delete one to restore this note."
+      );
+      return;
+    }
     const promise = restore({ id: documentId });
     toast.promise(promise, {
       loading: "Restoring document...",
@@ -90,5 +104,4 @@ const TrashBox = () => {
     </div>
   );
 };
-
 export default TrashBox;
