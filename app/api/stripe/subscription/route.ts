@@ -57,6 +57,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
+    if (!email) return NextResponse.json("Free");
     const customer = await stripe.customers.list({ email: email });
     if (!customer.data.length) return NextResponse.json("Free");
     const subscriptions = await stripe.subscriptions.list({
