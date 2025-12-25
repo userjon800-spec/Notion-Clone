@@ -1,10 +1,10 @@
 import { Doc } from "@/convex/_generated/dataModel";
-import { ElementRef, useRef, useState } from "react";
+import React, { ElementRef, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
+import IconPicker from "./icon-picker";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import IconPicker from "./icon-picker";
 import TextareaAutosize from "react-textarea-autosize";
 import { useCoverImage } from "@/hooks/use-cover-image";
 interface ToolbarProps {
@@ -12,11 +12,11 @@ interface ToolbarProps {
   preview?: boolean;
 }
 const Toolbar = ({ document, preview }: ToolbarProps) => {
-  const [value, setValue] = useState(document.title);
-   const coverImage = useCoverImage();
+  const coverImage = useCoverImage();
   const textareaRef = useRef<ElementRef<"textarea">>(null);
-  const updateFields = useMutation(api.document.updateFields);
+  const [value, setValue] = useState(document.title);
   const [isEditing, setIsEditing] = useState(false);
+  const updateFields = useMutation(api.document.updateFields);
   const onIconChange = (icon: string) => {
     updateFields({
       id: document._id,
@@ -30,9 +30,9 @@ const Toolbar = ({ document, preview }: ToolbarProps) => {
     });
   };
   const disableInput = () => setIsEditing(false);
-  const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
+  const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
       disableInput();
     }
   };
@@ -40,7 +40,7 @@ const Toolbar = ({ document, preview }: ToolbarProps) => {
     setValue(value);
     updateFields({
       id: document._id,
-      icon: value || "Nomsiz",
+      title: value || "Untitled",
     });
   };
   const enableInput = () => {
@@ -75,18 +75,16 @@ const Toolbar = ({ document, preview }: ToolbarProps) => {
       )}
       <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-4">
         {!document.icon && !preview && (
-          <>
-            <IconPicker asChild onChange={onIconChange}>
-              <Button
-                size={"sm"}
-                variant={"outline"}
-                className="text-muted-foreground text-xs"
-              >
-                <Smile className="h-4 w-4 mr-2" />
-                <span>Add icon</span>
-              </Button>
-            </IconPicker>
-          </>
+          <IconPicker asChild onChange={onIconChange}>
+            <Button
+              size={"sm"}
+              variant={"outline"}
+              className="text-muted-foreground text-xs"
+            >
+              <Smile className="h-4 w-4 mr-2" />
+              <span>Add icon</span>
+            </Button>
+          </IconPicker>
         )}
         {!document.coverImage && !preview && (
           <Button

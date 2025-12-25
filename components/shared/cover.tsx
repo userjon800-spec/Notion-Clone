@@ -29,7 +29,7 @@ const Cover = ({ preview, url }: CoverProps) => {
   };
   return (
     <div className={cn("relative w-full h-[35vh] group", url && "bg-muted")}>
-      {!url && (
+      {!!url && (
         <Image
           fill
           src={url ?? "/image.jpg"}
