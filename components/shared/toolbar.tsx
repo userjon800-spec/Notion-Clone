@@ -1,5 +1,5 @@
 import { Doc } from "@/convex/_generated/dataModel";
-import React, { ElementRef, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { ImageIcon, Smile, X } from "lucide-react";
 import IconPicker from "./icon-picker";
@@ -13,7 +13,7 @@ interface ToolbarProps {
 }
 const Toolbar = ({ document, preview }: ToolbarProps) => {
   const coverImage = useCoverImage();
-  const textareaRef = useRef<ElementRef<"textarea">>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [value, setValue] = useState(document.title);
   const [isEditing, setIsEditing] = useState(false);
   const updateFields = useMutation(api.document.updateFields);

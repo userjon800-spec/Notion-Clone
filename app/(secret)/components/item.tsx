@@ -21,7 +21,6 @@ import {
   Trash,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use } from "react";
 import { toast } from "sonner";
 interface ItemProps {
   id?: Id<"documents">;
@@ -54,14 +53,14 @@ const Item = ({
   const archive = useMutation(api.document.archive);
   const router = useRouter();
   const onCreateDocument = (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   ) => {
     e.stopPropagation();
     if (!id) return;
     createDocument({
       title: "Nomsiz",
       parentDocument: id,
-    }).then((docs) => {
+    }).then(() => {
       if (!expanded) {
         onExpand?.();
       }
@@ -87,7 +86,7 @@ const Item = ({
       style={{ paddingLeft: level ? `${level * 12 + 12}px` : "12px" }}
       className={cn(
         "group min-h-6.75 text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
-        active && "bg-primary/5 text-primary"
+        active && "bg-primary/5 text-primary",
       )}
       role="button"
       onClick={onClick}

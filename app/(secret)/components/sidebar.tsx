@@ -9,7 +9,7 @@ import {
   Settings,
   Trash,
 } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
@@ -38,15 +38,15 @@ const Sidebar = () => {
   const search = useSearch();
   const settings = useSettings();
   const { user } = useUser();
-  const sidebarRef = useRef<ElementRef<"div">>(null);
-  const navbarRef = useRef<ElementRef<"div">>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const navbarRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [isResetting, setIsResetting] = useState(false);
   const isResizing = useRef(false);
   const { plan, isLoading } = useSubscription(
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!
+    user?.emailAddresses[0]?.emailAddress!,
   );
   const documents = useQuery(api.document.getAllDocuments);
   const collapse = () => {
@@ -120,14 +120,14 @@ const Sidebar = () => {
         className={cn(
           "group/sidebar h-screen bg-secondary overflow-y-auto flex w-60 flex-col z-50 sticky left-0 top-0",
           isResetting && "transition-all ease-in duration-300",
-          isMobile && "w-0"
+          isMobile && "w-0",
         )}
         ref={sidebarRef}
       >
         <div
           className={cn(
             "h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100 transition",
-            isMobile && "opacity-100"
+            isMobile && "opacity-100",
           )}
           role="button"
           onClick={collapse}
@@ -209,7 +209,7 @@ const Sidebar = () => {
         className={cn(
           "absolute top-0 z-50 left-60 w-[calc(100% - 240px)]",
           isResetting && "transition-all ease-in duration-300",
-          isMobile && "w-full left-0"
+          isMobile && "w-full left-0",
         )}
         ref={navbarRef}
       >

@@ -35,7 +35,7 @@ export const getDocuments = query({
     const documents = await ctx.db
       .query("documents")
       .withIndex("by_user_parent", (q) =>
-        q.eq("userId", userId).eq("parentDocument", args.parentDocument)
+        q.eq("userId", userId).eq("parentDocument", args.parentDocument),
       )
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")
@@ -64,7 +64,7 @@ export const archive = mutation({
       const childrens = await ctx.db
         .query("documents")
         .withIndex("by_user_parent", (q) =>
-          q.eq("userId", userId).eq("parentDocument", documentId)
+          q.eq("userId", userId).eq("parentDocument", documentId),
         )
         .collect();
       for (const child of childrens) {
@@ -185,7 +185,7 @@ export const restore = mutation({
       const childrens = await ctx.db
         .query("documents")
         .withIndex("by_user_parent", (q) =>
-          q.eq("userId", userId).eq("parentDocument", documentId)
+          q.eq("userId", userId).eq("parentDocument", documentId),
         )
         .collect();
       for (const child of childrens) {
@@ -231,7 +231,7 @@ export const getAllDocuments = query({
     const documents = await ctx.db
       .query("documents")
       .withIndex("by_user_parent", (q) =>
-        q.eq("userId", userId).eq("parentDocument", undefined)
+        q.eq("userId", userId).eq("parentDocument", undefined),
       )
       .filter((q) => q.eq(q.field("isArchived"), false))
       .order("desc")

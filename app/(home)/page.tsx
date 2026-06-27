@@ -1,5 +1,4 @@
 import { Clients, Footer, Hereos, Pricing } from "./components";
-
 export default function Home() {
   return (
     <div className="min-h-full flex flex-col">

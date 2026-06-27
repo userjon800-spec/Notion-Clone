@@ -1,5 +1,4 @@
 import Image from "next/image";
-
 export function Clients() {
   return (
     <div className="max-w-xl">
@@ -10,7 +9,6 @@ export function Clients() {
         Powering the world’s best teams, from next-generation startups to
         established enterprises.
       </p>
-
       <div className="flex justify-center items-center gap-6 flex-wrap mt-6">
         {clients.map((client, idx) => (
           <Image key={idx} src={client} width={50} height={50} alt="Clients" />

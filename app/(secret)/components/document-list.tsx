@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/convex/_generated/api";
 import Item from "./item";
-// import { Trash } from "lucide-react";
 interface DocumentList {
   parentDocumentId?: Id<"documents">;
   level?: number;
@@ -46,7 +45,7 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
         className={cn(
           "hidden text-sm font-medium text-muted-foreground/80",
           expanded && "last:block",
-          level === 0 && "hidden"
+          level === 0 && "hidden",
         )}
         style={{
           paddingLeft: level ? `${level * 12 + 25}px` : undefined,
@@ -65,7 +64,6 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
             onExpand={() => onExpand(document._id)}
             active={params.documentId === document._id}
             documentIcon={document.icon}
-            // icon={Trash}
           />
           {expanded[document._id] && (
             <DocumentList parentDocumentId={document._id} level={level + 1} />
@@ -75,5 +73,4 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
     </>
   );
 };
-
 export default DocumentList;

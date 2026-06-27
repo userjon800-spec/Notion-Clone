@@ -5,7 +5,6 @@ import { useConvexAuth } from "convex/react";
 import { redirect } from "next/navigation";
 import { Sidebar } from "./components";
 import SearchCommand from "@/components/shared/search-command";
-
 const SecretLayout = ({ children }: ChildProps) => {
   const { isAuthenticated, isLoading } = useConvexAuth();
   if (isLoading) {
@@ -28,5 +27,4 @@ const SecretLayout = ({ children }: ChildProps) => {
     </div>
   );
 };
-
 export default SecretLayout;

@@ -18,7 +18,7 @@ const TrashBox = () => {
   const { user } = useUser();
   const { plan } = useSubscription(
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!
+    user?.emailAddresses[0]?.emailAddress!,
   );
   const AllDocuments = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);
@@ -48,7 +48,7 @@ const TrashBox = () => {
   const onRestore = (documentId: Id<"documents">) => {
     if (AllDocuments?.length && AllDocuments.length >= 3 && plan === "Free") {
       toast.error(
-        "You already have 3 notes. Please delete one to restore this note."
+        "You already have 3 notes. Please delete one to restore this note.",
       );
       return;
     }

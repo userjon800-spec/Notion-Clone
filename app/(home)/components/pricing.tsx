@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { PricingCard } from "./pricing-card";
-
 export function Pricing() {
   return (
     <div className="max-w-7xl mx-auto container">
@@ -30,7 +29,6 @@ const teams = [
   "/teams/4.svg",
   "/teams/5.svg",
 ];
-
 const cards = [
   {
     title: "Free",
@@ -45,7 +43,7 @@ const cards = [
     options:
       "Unlimited blocks for teams, Unlimited file uploads, 30 day page history, Invite 100 guests",
     price: "8",
-    priceId: 'price_1Shp0TRf96C37iyfi6cuAA0Q'
+    priceId: "price_1Shp0TRf96C37iyfi6cuAA0Q",
   },
   {
     title: "Business",
@@ -53,6 +51,6 @@ const cards = [
     options:
       "SAML SSO, Private teamspaces, Bulk PDF export, Advanced page analytics, 90 day page history, Invite 250 guests",
     price: "15",
-    priceId: 'price_1ShoyqRf96C37iyfB6J8CJ7Q'
+    priceId: "price_1ShoyqRf96C37iyfB6J8CJ7Q",
   },
 ];

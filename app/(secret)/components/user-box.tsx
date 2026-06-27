@@ -63,5 +63,4 @@ const UserBox = () => {
     </DropdownMenu>
   );
 };
-
 export default UserBox;

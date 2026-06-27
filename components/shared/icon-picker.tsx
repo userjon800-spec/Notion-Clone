@@ -28,5 +28,4 @@ const IconPicker = ({ children, onChange, asChild }: IconPickerProps) => {
     </Popover>
   );
 };
-
 export default IconPicker;

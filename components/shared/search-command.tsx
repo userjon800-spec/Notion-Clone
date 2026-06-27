@@ -1,6 +1,6 @@
 "use client";
 import { useUser } from "@clerk/clerk-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { File } from "lucide-react";
@@ -62,12 +62,11 @@ const SearchCommand = () => {
                   )}
                   <span>{document.title}</span>
                 </CommandItem>
-              )
+              ),
           )}
         </CommandGroup>
       </CommandList>
     </CommandDialog>
   );
 };
-
 export default SearchCommand;

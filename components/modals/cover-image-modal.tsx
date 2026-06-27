@@ -50,5 +50,4 @@ const CoverImageModal = () => {
     </Dialog>
   );
 };
-
 export default CoverImageModal;

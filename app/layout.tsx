@@ -10,12 +10,10 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
 export const metadata: Metadata = {
   title: "Notion",
   description:
@@ -24,7 +22,6 @@ export const metadata: Metadata = {
     icon: "/logo.svg",
   },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{

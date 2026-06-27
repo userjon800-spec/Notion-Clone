@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 export function UseScrolled() {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {

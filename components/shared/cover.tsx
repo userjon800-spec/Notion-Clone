@@ -62,7 +62,6 @@ const Cover = ({ preview, url }: CoverProps) => {
     </div>
   );
 };
-
 export default Cover;
 Cover.Skeleton = function CoverSkeleton() {
   return <Skeleton className="w-full h-[12vh]" />;

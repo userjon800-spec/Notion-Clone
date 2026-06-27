@@ -14,7 +14,7 @@ const DocumentPage = () => {
   const router = useRouter();
   const { plan, isLoading } = useSubscription(
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!
+    user?.emailAddresses[0]?.emailAddress!,
   );
   const documents = useQuery(api.document.getAllDocuments);
   const createDocument = useMutation(api.document.createDocument);
@@ -70,5 +70,4 @@ const DocumentPage = () => {
     </div>
   );
 };
-
 export default DocumentPage;

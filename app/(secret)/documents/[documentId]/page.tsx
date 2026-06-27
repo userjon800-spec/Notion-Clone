@@ -17,7 +17,7 @@ const DocumentIdPage = () => {
   const updateFields = useMutation(api.document.updateFields);
   const Editor = useMemo(
     () => dynamic(() => import("@/components/shared/editor"), { ssr: false }),
-    []
+    [],
   );
   if (document === undefined)
     return (
@@ -35,7 +35,7 @@ const DocumentIdPage = () => {
     );
   if (document === null) return null;
   const onChange = (value: string) => {
-     updateFields({
+    updateFields({
       id: document._id,
       content: value,
     });
@@ -50,5 +50,4 @@ const DocumentIdPage = () => {
     </div>
   );
 };
-
 export default DocumentIdPage;

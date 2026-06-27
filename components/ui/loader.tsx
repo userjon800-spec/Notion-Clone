@@ -19,5 +19,4 @@ interface LoaderProps extends VariantProps<typeof loaderVariants> {}
 const Loader = ({ size }: LoaderProps) => {
   return <Loader2 className={cn(loaderVariants({ size }))} />;
 };
-
 export default Loader;

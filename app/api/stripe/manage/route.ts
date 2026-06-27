@@ -1,6 +1,5 @@
 import stripe from "@/lib/stripe";
 import { NextResponse } from "next/server";
-
 export async function POST(req: Request) {
   try {
     const public_domain = process.env.NEXT_PUBLIC_DOMAIN;
@@ -25,7 +24,7 @@ export async function POST(req: Request) {
       `Something went wrong. Please try again - ${error}`,
       {
         status: 500,
-      }
+      },
     );
   }
 }

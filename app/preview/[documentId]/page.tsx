@@ -8,15 +8,14 @@ import { useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
-
 const Page = () => {
-  const params = useParams()
+  const params = useParams();
   const document = useQuery(api.document.getDocumentById, {
     id: params.documentId as Id<"documents">,
   });
   const Editor = useMemo(
     () => dynamic(() => import("@/components/shared/editor"), { ssr: false }),
-    []
+    [],
   );
   if (document === undefined) {
     return (
@@ -48,5 +47,4 @@ const Page = () => {
     </div>
   );
 };
-
 export default Page;

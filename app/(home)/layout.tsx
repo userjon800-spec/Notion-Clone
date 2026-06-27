@@ -1,6 +1,5 @@
 import { ChildProps } from "@/types";
 import { Navbar } from "./components";
-
 const HomeLayout = ({ children }: ChildProps) => {
   return (
     <div className="h-full">
@@ -9,5 +8,4 @@ const HomeLayout = ({ children }: ChildProps) => {
     </div>
   );
 };
-
 export default HomeLayout;

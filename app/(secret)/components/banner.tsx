@@ -15,7 +15,7 @@ const Banner = ({ documentId }: BannerProps) => {
   const { user } = useUser();
   const { plan } = useSubscription(
     // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!
+    user?.emailAddresses[0]?.emailAddress!,
   );
   const documents = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);

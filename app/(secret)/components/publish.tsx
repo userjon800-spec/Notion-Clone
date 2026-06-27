@@ -114,5 +114,4 @@ const Publish = ({ document }: PublishProps) => {
     </Popover>
   );
 };
-
 export default Publish;

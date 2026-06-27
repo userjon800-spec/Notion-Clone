@@ -8,7 +8,6 @@ import { Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { email } from "zod";
 interface PricingCardProps {
   title: string;
   subtitle: string;
@@ -41,7 +40,7 @@ export function PricingCard({
       });
       window.open(data, "_self");
       setIsSubmitting(false);
-    } catch (error) {
+    } catch {
       setIsSubmitting(false);
       toast.error("Something went wrong. Please try again.");
     }

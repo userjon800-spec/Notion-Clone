@@ -49,5 +49,4 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
     </>
   );
 };
-
 export default Navbar;

@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       customer: customer?.id,
     });
     const isSubscribed = subscriptions.data.find(
-      (sub) => sub.status === "active"
+      (sub) => sub.status === "active",
     );
     if (!isSubscribed) {
       const subscription = await stripe.checkout.sessions.create({
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
       `Something went wrong. Please try again - ${error}`,
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -70,7 +70,7 @@ export async function GET(req: Request) {
       `Something went wrong. Please try again - ${error}`,
       {
         status: 500,
-      }
+      },
     );
   }
 }

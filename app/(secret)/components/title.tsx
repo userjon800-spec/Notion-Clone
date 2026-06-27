@@ -17,8 +17,8 @@ const Title = ({ document }: TitleProps) => {
     setTitle(document.title);
     setIsEditing(true);
     setTimeout(() => {
-      inputRef.current?.focus()
-      inputRef.current?.setSelectionRange(0,inputRef.current.value.length)
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(0, inputRef.current.value.length);
     }, 0);
   };
   const disableInput = () => {
@@ -28,7 +28,7 @@ const Title = ({ document }: TitleProps) => {
     setTitle(e.target.value);
     updateFields({
       id: document._id,
-      title: e.target.value || 'Untitled',
+      title: e.target.value || "Untitled",
     });
   };
   const onKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -63,7 +63,6 @@ const Title = ({ document }: TitleProps) => {
   );
 };
 export default Title;
-
 Title.Skeleton = function TitleSkeleton() {
   return <Skeleton className="h-9 w-20 rounded-md" />;
 };
