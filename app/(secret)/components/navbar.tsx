@@ -2,6 +2,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { MenuIcon, Star } from "lucide-react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import Title from "./title";
 import Publish from "./publish";
@@ -21,6 +22,10 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
   const document = useQuery(api.document.getDocumentById, {
     id: params.documentId as Id<"documents">,
   });
+  const breadcrumbs = useQuery(
+    api.document.getBreadcrumbs,
+    params.documentId ? { id: params.documentId as Id<"documents"> } : "skip",
+  );
   const toggleFavorite = useMutation(api.document.toggleFavorite);
 
   const onToggleFavorite = () => {
@@ -57,12 +62,28 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
           />
         )}
         <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center gap-x-1.5 overflow-hidden">
+            {breadcrumbs && breadcrumbs.length > 1 && (
+              <div className="flex items-center gap-x-1.5 text-sm text-muted-foreground mr-1 shrink-0">
+                {breadcrumbs.slice(0, -1).map((crumb) => (
+                  <div key={crumb.id} className="flex items-center gap-x-1.5">
+                    <Link
+                      href={`/documents/${crumb.id}`}
+                      className="flex items-center gap-1 hover:text-foreground transition truncate max-w-[120px]"
+                    >
+                      {crumb.icon && <span>{crumb.icon}</span>}
+                      <span className="truncate">{crumb.title}</span>
+                    </Link>
+                    <span className="text-muted-foreground/40 select-none">/</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <Title document={document} />
             <Button
               size="sm"
               variant="ghost"
-              className="h-7 w-7 p-0"
+              className="h-7 w-7 p-0 shrink-0"
               onClick={onToggleFavorite}
               title={document.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
             >
@@ -76,7 +97,7 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
               />
             </Button>
           </div>
-          <div className="flex items-center gap-x-2">
+          <div className="flex items-center gap-x-2 shrink-0">
             <Publish document={document} />
             <Menu document={document} documentId={document._id} />
           </div>

@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Loader from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
@@ -11,19 +12,21 @@ import ConfirmModal from "@/components/modals/confirm-modal";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useUser } from "@clerk/nextjs";
+
 const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
   const documents = useQuery(api.document.getTrashDocuments);
   const { user } = useUser();
   const { plan } = useSubscription(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!,
+    user?.emailAddresses[0]?.emailAddress,
   );
   const AllDocuments = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);
   const restore = useMutation(api.document.restore);
+  const emptyTrash = useMutation(api.document.emptyTrash);
   const [search, setSearch] = useState("");
+
   if (documents === undefined) {
     return (
       <div className="h-full flex items-center justify-center p-4">
@@ -31,9 +34,11 @@ const TrashBox = () => {
       </div>
     );
   }
+
   const filteredDocuments = documents.filter((docs) => {
     return docs.title.toLowerCase().includes(search.toLowerCase());
   });
+
   const onRemove = (documentId: Id<"documents">) => {
     const promise = remove({ id: documentId });
     toast.promise(promise, {
@@ -45,6 +50,7 @@ const TrashBox = () => {
       router.push("/documents");
     }
   };
+
   const onRestore = (documentId: Id<"documents">) => {
     if (AllDocuments?.length && AllDocuments.length >= 7 && plan === "Free") {
       toast.error(
@@ -59,49 +65,91 @@ const TrashBox = () => {
       error: "Failed to restore document",
     });
   };
+
+  const onEmptyTrash = () => {
+    const promise = emptyTrash({});
+    toast.promise(promise, {
+      loading: "Emptying trash...",
+      success: "All trash documents deleted permanently!",
+      error: "Failed to empty trash",
+    });
+    router.push("/documents");
+  };
+
   return (
     <div className="text-sm">
       <div className="flex items-center gap-x-1 p-2">
-        <Search className="w-4 h-4" />
+        <Search className="w-4 h-4 text-muted-foreground" />
         <Input
           className="h-7 px-2 focus-visible:ring-transparent bg-secondary"
           placeholder="Filter by page title..."
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-      <div className="mt-2 px-1 pb-1">
-        <p className="hidden last:block text-xs text-center text-muted-foreground pb-2">
-          No documents in trash
-        </p>
-      </div>
-      {filteredDocuments.map((document) => (
-        <div
-          key={document._id}
-          className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
-          role="button"
-          onClick={() => router.push(`/documents/${document._id}`)}
-        >
-          <span className="truncate pl-2">{document.title}</span>
-          <div className="flex items-center">
-            <div
-              className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
-              role="button"
-              onClick={() => onRestore(document._id)}
+
+      {documents.length > 0 && (
+        <div className="flex items-center justify-between px-2 py-1.5 border-b mb-1">
+          <span className="text-xs text-muted-foreground font-medium">
+            {documents.length} item{documents.length > 1 ? "s" : ""}
+          </span>
+          <ConfirmModal onConfirm={onEmptyTrash}>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
             >
-              <Undo className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <ConfirmModal onConfirm={() => onRemove(document._id)}>
-              <div
-                role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
-              >
-                <Trash className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </ConfirmModal>
-          </div>
+              <Trash className="h-3 w-3 mr-1" />
+              Empty Trash
+            </Button>
+          </ConfirmModal>
         </div>
-      ))}
+      )}
+
+      <div className="mt-2 px-1 pb-1">
+        {filteredDocuments.length === 0 && (
+          <p className="text-xs text-center text-muted-foreground pb-2">
+            No documents in trash
+          </p>
+        )}
+      </div>
+
+      <div className="max-h-72 overflow-y-auto">
+        {filteredDocuments.map((document) => (
+          <div
+            key={document._id}
+            className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between py-1"
+            role="button"
+            onClick={() => router.push(`/documents/${document._id}`)}
+          >
+            <span className="truncate pl-2">{document.title}</span>
+            <div className="flex items-center">
+              <div
+                className="rounded-sm p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-600"
+                role="button"
+                title="Restore note"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRestore(document._id);
+                }}
+              >
+                <Undo className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <ConfirmModal onConfirm={() => onRemove(document._id)}>
+                <div
+                  role="button"
+                  title="Delete forever"
+                  className="rounded-sm p-1.5 hover:bg-neutral-200 dark:hover:bg-neutral-600"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Trash className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </ConfirmModal>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
+
 export default TrashBox;

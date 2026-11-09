@@ -324,3 +324,49 @@ export const duplicate = mutation({
     return newDocument;
   },
 });
+
+export const getBreadcrumbs = query({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+    const breadcrumbs: Array<{ id: Id<"documents">; title: string; icon?: string }> = [];
+    let currentId: Id<"documents"> | undefined = args.id;
+
+    while (currentId) {
+      const doc = await ctx.db.get(currentId);
+      if (!doc || doc.userId !== userId) break;
+      breadcrumbs.unshift({
+        id: doc._id,
+        title: doc.title || "Untitled",
+        icon: doc.icon,
+      });
+      currentId = doc.parentDocument;
+    }
+
+    return breadcrumbs;
+  },
+});
+
+export const emptyTrash = mutation({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+    const documents = await ctx.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .collect();
+
+    for (const doc of documents) {
+      await ctx.db.delete(doc._id);
+    }
+    return documents.length;
+  },
+});
