@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { Doc, Id } from "./_generated/dataModel";
+
 export const createDocument = mutation({
   args: {
     title: v.string(),
@@ -18,10 +19,12 @@ export const createDocument = mutation({
       userId,
       isArchived: false,
       isPublished: false,
+      isFavorite: false,
     });
     return document;
   },
 });
+
 export const getDocuments = query({
   args: {
     parentDocument: v.optional(v.id("documents")),
@@ -43,6 +46,7 @@ export const getDocuments = query({
     return documents;
   },
 });
+
 export const archive = mutation({
   args: {
     id: v.id("documents"),
@@ -81,6 +85,7 @@ export const archive = mutation({
     return document;
   },
 });
+
 export const getTrashDocuments = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -97,6 +102,7 @@ export const getTrashDocuments = query({
     return documents;
   },
 });
+
 export const remove = mutation({
   args: { id: v.id("documents") },
   handler: async (ctx, args) => {
@@ -116,6 +122,7 @@ export const remove = mutation({
     return documents;
   },
 });
+
 export const getDocumentById = query({
   args: {
     id: v.id("documents"),
@@ -139,6 +146,7 @@ export const getDocumentById = query({
     return document;
   },
 });
+
 export const updateFields = mutation({
   args: {
     id: v.id("documents"),
@@ -147,6 +155,7 @@ export const updateFields = mutation({
     coverImage: v.optional(v.string()),
     icon: v.optional(v.string()),
     isPublished: v.optional(v.boolean()),
+    isFavorite: v.optional(v.boolean()),
   },
   async handler(ctx, args) {
     const identity = await ctx.auth.getUserIdentity();
@@ -166,6 +175,7 @@ export const updateFields = mutation({
     return document;
   },
 });
+
 export const restore = mutation({
   args: { id: v.id("documents") },
   async handler(ctx, args) {
@@ -206,6 +216,7 @@ export const restore = mutation({
     return document;
   },
 });
+
 export const getSearch = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -221,6 +232,7 @@ export const getSearch = query({
     return documents;
   },
 });
+
 export const getAllDocuments = query({
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -237,5 +249,78 @@ export const getAllDocuments = query({
       .order("desc")
       .collect();
     return documents;
+  },
+});
+
+export const toggleFavorite = mutation({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+    const document = await ctx.db.get(args.id);
+    if (!document) {
+      throw new Error("Not found");
+    }
+    if (document.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+    const isFavorite = !document.isFavorite;
+    await ctx.db.patch(args.id, { isFavorite });
+    return isFavorite;
+  },
+});
+
+export const getFavorites = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+    const documents = await ctx.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) =>
+        q.and(
+          q.eq(q.field("isArchived"), false),
+          q.eq(q.field("isFavorite"), true),
+        ),
+      )
+      .order("desc")
+      .collect();
+    return documents;
+  },
+});
+
+export const duplicate = mutation({
+  args: { id: v.id("documents") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+    const document = await ctx.db.get(args.id);
+    if (!document) {
+      throw new Error("Not found");
+    }
+    if (document.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+    const newDocument = await ctx.db.insert("documents", {
+      title: `${document.title || "Untitled"} (Copy)`,
+      userId,
+      isArchived: false,
+      isPublished: false,
+      isFavorite: false,
+      parentDocument: document.parentDocument,
+      content: document.content,
+      coverImage: document.coverImage,
+      icon: document.icon,
+    });
+    return newDocument;
   },
 });

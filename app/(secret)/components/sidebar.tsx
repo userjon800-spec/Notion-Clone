@@ -7,6 +7,7 @@ import {
   Rocket,
   Search,
   Settings,
+  Star,
   Trash,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -49,6 +50,7 @@ const Sidebar = () => {
     user?.emailAddresses[0]?.emailAddress!,
   );
   const documents = useQuery(api.document.getAllDocuments);
+  const favorites = useQuery(api.document.getFavorites);
   const collapse = () => {
     if (sidebarRef.current && navbarRef.current) {
       setIsCollapsed(true);
@@ -151,6 +153,25 @@ const Sidebar = () => {
           <Item label="New document" icon={Plus} onClick={onCreateDocument} />
         </div>
         <div className="mt-4">
+          {favorites && favorites.length > 0 && (
+            <div className="mb-4">
+              <div className="text-[11px] font-semibold text-muted-foreground/70 px-3 py-1 flex items-center gap-1.5 uppercase tracking-wider">
+                <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+                <span>Favorites</span>
+              </div>
+              {favorites.map((doc) => (
+                <Item
+                  key={doc._id}
+                  id={doc._id}
+                  label={doc.title}
+                  documentIcon={doc.icon}
+                  active={params.documentId === doc._id}
+                  onClick={() => router.push(`/documents/${doc._id}`)}
+                  isFavorite={doc.isFavorite}
+                />
+              ))}
+            </div>
+          )}
           <DocumentList />
           <Item onClick={onCreateDocument} icon={Plus} label="Add a page" />
           <Popover>

@@ -1,21 +1,38 @@
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useQuery } from "convex/react";
-import { MenuIcon } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { MenuIcon, Star } from "lucide-react";
 import { useParams } from "next/navigation";
 import Title from "./title";
 import Publish from "./publish";
 import Menu from "./menu";
 import { Banner } from "./banner";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
 interface NavbarProps {
   isCollapsed: boolean;
   reset: () => void;
 }
+
 const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
   const params = useParams();
   const document = useQuery(api.document.getDocumentById, {
     id: params.documentId as Id<"documents">,
   });
+  const toggleFavorite = useMutation(api.document.toggleFavorite);
+
+  const onToggleFavorite = () => {
+    if (!document) return;
+    const promise = toggleFavorite({ id: document._id });
+    toast.promise(promise, {
+      loading: "Updating favorites...",
+      success: (isFav) => (isFav ? "Added to favorites!" : "Removed from favorites!"),
+      error: "Failed to update favorites",
+    });
+  };
+
   if (document === undefined) {
     return (
       <nav className="bg-background px-3 py-2 w-full flex items-center justify-between">
@@ -26,7 +43,9 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
       </nav>
     );
   }
+
   if (document === null) return null;
+
   return (
     <>
       <nav className="bg-background px-3 py-2 w-full flex items-center gap-x-4">
@@ -38,10 +57,28 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
           />
         )}
         <div className="flex items-center justify-between w-full">
-          <Title document={document} />
+          <div className="flex items-center gap-x-1">
+            <Title document={document} />
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-7 w-7 p-0"
+              onClick={onToggleFavorite}
+              title={document.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+            >
+              <Star
+                className={cn(
+                  "h-4 w-4 transition",
+                  document.isFavorite
+                    ? "fill-amber-400 text-amber-400"
+                    : "text-muted-foreground hover:text-amber-400",
+                )}
+              />
+            </Button>
+          </div>
           <div className="flex items-center gap-x-2">
             <Publish document={document} />
-            <Menu documentId={document._id} />
+            <Menu document={document} documentId={document._id} />
           </div>
         </div>
       </nav>
@@ -49,4 +86,5 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
     </>
   );
 };
+
 export default Navbar;

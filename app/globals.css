@@ -126,3 +126,44 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    margin: 15mm;
+    size: auto;
+  }
+  html,
+  body {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #111111 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .group\/sidebar,
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  /* BlockNote, headings and editor text colors */
+  .bn-container,
+  .bn-editor,
+  .bn-block-content,
+  [data-color-scheme="dark"],
+  [data-color-scheme="light"] {
+    background-color: transparent !important;
+    background: transparent !important;
+    color: #111111 !important;
+  }
+  /* Force all editor texts to readable dark color */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    color: inherit;
+  }
+}

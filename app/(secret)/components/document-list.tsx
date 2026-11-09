@@ -64,6 +64,7 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
             onExpand={() => onExpand(document._id)}
             active={params.documentId === document._id}
             documentIcon={document.icon}
+            isFavorite={document.isFavorite}
           />
           {expanded[document._id] && (
             <DocumentList parentDocumentId={document._id} level={level + 1} />
