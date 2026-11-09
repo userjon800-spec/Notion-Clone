@@ -13,18 +13,54 @@ import { Check, Image as ImageIcon, Palette, Upload } from "lucide-react";
 import Image from "next/image";
 
 const GRADIENTS = [
-  { name: "Sunset", value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)" },
-  { name: "Ocean Wave", value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)" },
-  { name: "Sky Blue", value: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)" },
-  { name: "Purple Horizon", value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
-  { name: "Mint Fresh", value: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)" },
-  { name: "Pink Flamingo", value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" },
-  { name: "Sunburst", value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)" },
-  { name: "Emerald Spring", value: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)" },
-  { name: "Deep Midnight", value: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)" },
-  { name: "Notion Charcoal", value: "linear-gradient(135deg, #232526 0%, #414345 100%)" },
-  { name: "Cyberpunk", value: "linear-gradient(135deg, #f72585 0%, #7209b7 50%, #3a0ca3 100%)" },
-  { name: "Northern Lights", value: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)" },
+  {
+    name: "Sunset",
+    value: "linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%)",
+  },
+  {
+    name: "Ocean Wave",
+    value: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+  },
+  {
+    name: "Sky Blue",
+    value: "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+  },
+  {
+    name: "Purple Horizon",
+    value: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  },
+  {
+    name: "Mint Fresh",
+    value: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)",
+  },
+  {
+    name: "Pink Flamingo",
+    value: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  },
+  {
+    name: "Sunburst",
+    value: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+  },
+  {
+    name: "Emerald Spring",
+    value: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+  },
+  {
+    name: "Deep Midnight",
+    value: "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+  },
+  {
+    name: "Notion Charcoal",
+    value: "linear-gradient(135deg, #232526 0%, #414345 100%)",
+  },
+  {
+    name: "Cyberpunk",
+    value: "linear-gradient(135deg, #f72585 0%, #7209b7 50%, #3a0ca3 100%)",
+  },
+  {
+    name: "Northern Lights",
+    value: "linear-gradient(135deg, #00c6ff 0%, #0072ff 100%)",
+  },
 ];
 
 const SOLID_COLORS = [
@@ -84,6 +120,13 @@ const CoverImageModal = () => {
     if (!params.documentId) return;
     setIsSubmitting(true);
     try {
+      if (coverImage.url && coverImage.url.includes("edgestore")) {
+        try {
+          await edgestore.publicFiles.delete({ url: coverImage.url });
+        } catch {
+          // ignore storage error if already deleted
+        }
+      }
       await updateFields({
         id: params.documentId as Id<"documents">,
         coverImage: coverUrl,
@@ -181,7 +224,9 @@ const CoverImageModal = () => {
                       onClick={() => onSelectPreset(grad.value)}
                       className={cn(
                         "relative h-16 rounded-md transition shadow-xs hover:opacity-90 overflow-hidden border-2",
-                        isSelected ? "border-primary ring-2 ring-primary/40" : "border-transparent",
+                        isSelected
+                          ? "border-primary ring-2 ring-primary/40"
+                          : "border-transparent",
                       )}
                       style={{ background: grad.value }}
                       title={grad.name}
@@ -216,7 +261,9 @@ const CoverImageModal = () => {
                       onClick={() => onSelectPreset(color.value)}
                       className={cn(
                         "relative h-12 rounded-md transition hover:scale-105 border-2",
-                        isSelected ? "border-primary ring-2 ring-primary/40" : "border-transparent",
+                        isSelected
+                          ? "border-primary ring-2 ring-primary/40"
+                          : "border-transparent",
                       )}
                       style={{ backgroundColor: color.value }}
                       title={color.name}
@@ -248,7 +295,9 @@ const CoverImageModal = () => {
                       onClick={() => onSelectPreset(wp.url)}
                       className={cn(
                         "relative h-20 rounded-md overflow-hidden transition group border-2",
-                        isSelected ? "border-primary ring-2 ring-primary/40" : "border-transparent",
+                        isSelected
+                          ? "border-primary ring-2 ring-primary/40"
+                          : "border-transparent",
                       )}
                     >
                       <Image

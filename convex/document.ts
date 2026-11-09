@@ -333,7 +333,11 @@ export const getBreadcrumbs = query({
       throw new Error("Not authenticated");
     }
     const userId = identity.subject;
-    const breadcrumbs: Array<{ id: Id<"documents">; title: string; icon?: string }> = [];
+    const breadcrumbs: Array<{
+      id: Id<"documents">;
+      title: string;
+      icon?: string;
+    }> = [];
     let currentId: Id<"documents"> | undefined = args.id;
 
     while (currentId) {

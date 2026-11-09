@@ -3,7 +3,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useParams } from "next/navigation";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useMutation, useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import Cover from "@/components/shared/cover";
@@ -15,6 +15,13 @@ const DocumentIdPage = () => {
     id: params.documentId as Id<"documents">,
   });
   const updateFields = useMutation(api.document.updateFields);
+
+  useEffect(() => {
+    if (document) {
+      const prefix = document.icon ? `${document.icon} ` : "";
+      window.document.title = `${prefix}${document.title || "Untitled"} | Notion`;
+    }
+  }, [document?.title, document?.icon]);
   const Editor = useMemo(
     () => dynamic(() => import("@/components/shared/editor"), { ssr: false }),
     [],

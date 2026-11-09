@@ -7,13 +7,20 @@ import { Id } from "@/convex/_generated/dataModel";
 import { useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import "@blocknote/mantine/style.css";
 const Page = () => {
   const params = useParams();
   const document = useQuery(api.document.getDocumentById, {
     id: params.documentId as Id<"documents">,
   });
+
+  useEffect(() => {
+    if (document) {
+      const prefix = document.icon ? `${document.icon} ` : "";
+      window.document.title = `${prefix}${document.title || "Untitled"} | Notion`;
+    }
+  }, [document?.title, document?.icon]);
   const Editor = useMemo(
     () => dynamic(() => import("@/components/shared/editor"), { ssr: false }),
     [],

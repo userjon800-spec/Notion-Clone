@@ -43,7 +43,7 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
     <>
       <p
         className={cn(
-          "hidden text-sm font-medium text-muted-foreground/80",
+          "hidden text-xs font-normal text-muted-foreground/60 py-1 italic",
           expanded && "last:block",
           level === 0 && "hidden",
         )}
@@ -51,7 +51,7 @@ const DocumentList = ({ level = 0, parentDocumentId }: DocumentList) => {
           paddingLeft: level ? `${level * 12 + 25}px` : undefined,
         }}
       >
-        No documents found.
+        No pages inside
       </p>
       {documents?.map((document) => (
         <div key={document._id}>

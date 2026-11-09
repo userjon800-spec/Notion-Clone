@@ -15,11 +15,39 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 export const metadata: Metadata = {
-  title: "Notion",
+  title: {
+    default: "Notion - Your connected workspace",
+    template: "%s | Notion",
+  },
   description:
-    "A new tool that blends your everyday work apps into one. It's the all-in-one workspace for you and your team",
+    "A new tool that blends your everyday work apps into one. It's the all-in-one workspace for you and your team to write, plan, and share with AI at your side.",
   icons: {
-    icon: "/logo.svg",
+    icon: [
+      {
+        media: "(prefers-color-scheme: light)",
+        url: "/logo.svg",
+        href: "/logo.svg",
+      },
+      {
+        media: "(prefers-color-scheme: dark)",
+        url: "/logo-dark.svg",
+        href: "/logo-dark.svg",
+      },
+    ],
+  },
+  openGraph: {
+    title: "Notion - Your connected workspace",
+    description:
+      "A new tool that blends your everyday work apps into one. Write, plan, share with AI at your side.",
+    siteName: "Notion",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Notion - Your connected workspace",
+    description:
+      "A new tool that blends your everyday work apps into one. Write, plan, share with AI at your side.",
   },
 };
 export default function RootLayout({

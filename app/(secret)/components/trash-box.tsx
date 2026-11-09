@@ -5,22 +5,26 @@ import Loader from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
 import { useQuery, useMutation } from "convex/react";
 import { useRouter, useParams } from "next/navigation";
-import { Search, Trash, Undo } from "lucide-react";
+import { Inbox, Search, Trash, Undo } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSubscription } from "@/hooks/use-subscription";
 import { useUser } from "@clerk/nextjs";
+import { useEdgeStore } from "@/lib/edge-store";
+import {
+  deleteEdgeStoreFiles,
+  extractEdgeStoreUrls,
+} from "@/lib/storage-cleanup";
 
 const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
+  const { edgestore } = useEdgeStore();
   const documents = useQuery(api.document.getTrashDocuments);
   const { user } = useUser();
-  const { plan } = useSubscription(
-    user?.emailAddresses[0]?.emailAddress,
-  );
+  const { plan } = useSubscription(user?.emailAddresses[0]?.emailAddress);
   const AllDocuments = useQuery(api.document.getAllDocuments);
   const remove = useMutation(api.document.remove);
   const restore = useMutation(api.document.restore);
@@ -40,6 +44,12 @@ const TrashBox = () => {
   });
 
   const onRemove = (documentId: Id<"documents">) => {
+    const target = documents.find((d) => d._id === documentId);
+    if (target) {
+      const urls = extractEdgeStoreUrls(target.content, target.coverImage);
+      deleteEdgeStoreFiles(edgestore, urls);
+    }
+
     const promise = remove({ id: documentId });
     toast.promise(promise, {
       loading: "Removing document...",
@@ -67,6 +77,13 @@ const TrashBox = () => {
   };
 
   const onEmptyTrash = () => {
+    if (documents.length > 0) {
+      const allUrls = documents.flatMap((d) =>
+        extractEdgeStoreUrls(d.content, d.coverImage),
+      );
+      deleteEdgeStoreFiles(edgestore, allUrls);
+    }
+
     const promise = emptyTrash({});
     toast.promise(promise, {
       loading: "Emptying trash...",
@@ -105,13 +122,25 @@ const TrashBox = () => {
         </div>
       )}
 
-      <div className="mt-2 px-1 pb-1">
-        {filteredDocuments.length === 0 && (
-          <p className="text-xs text-center text-muted-foreground pb-2">
-            No documents in trash
+      {/* Empty State when no trash */}
+      {documents.length === 0 && (
+        <div className="flex flex-col items-center justify-center p-6 text-center">
+          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center mb-2 text-muted-foreground">
+            <Inbox className="h-5 w-5" />
+          </div>
+          <p className="text-xs font-medium text-foreground">Trash is empty</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5 max-w-[180px]">
+            Pages you delete will show up here until permanently removed.
           </p>
-        )}
-      </div>
+        </div>
+      )}
+
+      {/* Empty State when filter yields 0 matches */}
+      {documents.length > 0 && filteredDocuments.length === 0 && (
+        <div className="py-6 text-center text-xs text-muted-foreground">
+          No matching pages found in trash
+        </div>
+      )}
 
       <div className="max-h-72 overflow-y-auto">
         {filteredDocuments.map((document) => (

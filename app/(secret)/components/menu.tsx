@@ -26,9 +26,7 @@ const Menu = ({ documentId, document }: MenuProps) => {
   const router = useRouter();
   const { user } = useUser();
   const id = document?._id || documentId;
-  const { plan } = useSubscription(
-    user?.emailAddresses[0]?.emailAddress,
-  );
+  const { plan } = useSubscription(user?.emailAddresses[0]?.emailAddress);
   const documents = useQuery(api.document.getAllDocuments);
   const archive = useMutation(api.document.archive);
   const duplicate = useMutation(api.document.duplicate);

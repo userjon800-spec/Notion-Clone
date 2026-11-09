@@ -50,8 +50,8 @@ const DocumentPage = () => {
         height={300}
         className="object-cover hidden dark:block"
       />
-      <h2 className="text-lg font-bold">
-        Welcome to {user?.firstName}`s document page!
+      <h2 className="text-lg font-semibold text-center">
+        Welcome to {user?.firstName ? `${user.firstName}'s` : "your"} Notion!
       </h2>
       <Button onClick={onCreateDocument} disabled={isLoading}>
         {isLoading && (
@@ -63,10 +63,17 @@ const DocumentPage = () => {
         {!isLoading && (
           <>
             <Plus className="h-4 w-4 mr-2" />
-            Create a blank
+            Create a note
           </>
         )}
       </Button>
+      <p className="text-xs text-muted-foreground text-center">
+        Select a page from the sidebar or press{" "}
+        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-0.5 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+          ⌘ + I
+        </kbd>{" "}
+        to search
+      </p>
     </div>
   );
 };

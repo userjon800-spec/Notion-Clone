@@ -3,24 +3,35 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useEdgeStore } from "@/lib/edge-store";
+import {
+  deleteEdgeStoreFiles,
+  extractEdgeStoreUrls,
+} from "@/lib/storage-cleanup";
 import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
 interface BannerProps {
   documentId: Id<"documents">;
 }
+
 const Banner = ({ documentId }: BannerProps) => {
   const router = useRouter();
   const { user } = useUser();
-  const { plan } = useSubscription(
-    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-    user?.emailAddresses[0]?.emailAddress!,
-  );
+  const { edgestore } = useEdgeStore();
+  const { plan } = useSubscription(user?.emailAddresses[0]?.emailAddress);
   const documents = useQuery(api.document.getAllDocuments);
+  const document = useQuery(api.document.getDocumentById, { id: documentId });
   const remove = useMutation(api.document.remove);
   const restore = useMutation(api.document.restore);
-  const onRemove = () => {
+
+  const onRemove = async () => {
+    if (document) {
+      const urls = extractEdgeStoreUrls(document.content, document.coverImage);
+      deleteEdgeStoreFiles(edgestore, urls);
+    }
     const promise = remove({ id: documentId });
     toast.promise(promise, {
       loading: "Removing document...",
@@ -29,6 +40,7 @@ const Banner = ({ documentId }: BannerProps) => {
     });
     router.push("/documents");
   };
+
   const onRestore = () => {
     if (documents?.length && documents.length >= 7 && plan === "Free") {
       toast.error("You can only create 7 documents in the free plan");
@@ -41,6 +53,7 @@ const Banner = ({ documentId }: BannerProps) => {
       error: "Failed to restore document",
     });
   };
+
   return (
     <div className="w-full bg-red-500 text-center text-sm p-2 text-white flex items-center gap-x-2 justify-center">
       <p>This page is in the Trash.</p>
@@ -64,4 +77,5 @@ const Banner = ({ documentId }: BannerProps) => {
     </div>
   );
 };
+
 export { Banner };

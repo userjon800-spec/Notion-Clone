@@ -60,9 +60,7 @@ const Item = ({
   const archive = useMutation(api.document.archive);
   const duplicate = useMutation(api.document.duplicate);
   const toggleFavorite = useMutation(api.document.toggleFavorite);
-  const { plan } = useSubscription(
-    user?.emailAddresses[0]?.emailAddress,
-  );
+  const { plan } = useSubscription(user?.emailAddresses[0]?.emailAddress);
   const documents = useQuery(api.document.getAllDocuments);
   const router = useRouter();
 
@@ -104,7 +102,8 @@ const Item = ({
     const promise = toggleFavorite({ id });
     toast.promise(promise, {
       loading: "Updating favorites...",
-      success: (fav) => (fav ? "Added to favorites!" : "Removed from favorites!"),
+      success: (fav) =>
+        fav ? "Added to favorites!" : "Removed from favorites!",
       error: "Failed to update favorites",
     });
   };

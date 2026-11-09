@@ -33,7 +33,8 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
     const promise = toggleFavorite({ id: document._id });
     toast.promise(promise, {
       loading: "Updating favorites...",
-      success: (isFav) => (isFav ? "Added to favorites!" : "Removed from favorites!"),
+      success: (isFav) =>
+        isFav ? "Added to favorites!" : "Removed from favorites!",
       error: "Failed to update favorites",
     });
   };
@@ -69,12 +70,14 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
                   <div key={crumb.id} className="flex items-center gap-x-1.5">
                     <Link
                       href={`/documents/${crumb.id}`}
-                      className="flex items-center gap-1 hover:text-foreground transition truncate max-w-[120px]"
+                      className="flex items-center gap-1 hover:text-foreground transition truncate max-w-30"
                     >
                       {crumb.icon && <span>{crumb.icon}</span>}
                       <span className="truncate">{crumb.title}</span>
                     </Link>
-                    <span className="text-muted-foreground/40 select-none">/</span>
+                    <span className="text-muted-foreground/40 select-none">
+                      /
+                    </span>
                   </div>
                 ))}
               </div>
@@ -85,7 +88,11 @@ const Navbar = ({ isCollapsed, reset }: NavbarProps) => {
               variant="ghost"
               className="h-7 w-7 p-0 shrink-0"
               onClick={onToggleFavorite}
-              title={document.isFavorite ? "Remove from Favorites" : "Add to Favorites"}
+              title={
+                document.isFavorite
+                  ? "Remove from Favorites"
+                  : "Add to Favorites"
+              }
             >
               <Star
                 className={cn(

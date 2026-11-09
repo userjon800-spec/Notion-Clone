@@ -3,7 +3,7 @@ import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { File } from "lucide-react";
+import { File, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   CommandDialog,
@@ -44,7 +44,17 @@ const SearchCommand = () => {
     <CommandDialog open={isOpen} onOpenChange={onClose}>
       <CommandInput placeholder={`Search ${user?.fullName}'s Notion`} />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <CommandEmpty>
+          <div className="py-8 flex flex-col items-center justify-center text-center">
+            <Search className="h-8 w-8 text-muted-foreground/40 mb-2" />
+            <p className="text-sm font-medium text-foreground">
+              No documents found
+            </p>
+            <p className="text-xs text-muted-foreground mt-1 max-w-[220px]">
+              Try searching with a different keyword or create a new blank.
+            </p>
+          </div>
+        </CommandEmpty>
         <CommandGroup heading={"Documents"}>
           {documents?.map(
             (document) =>
