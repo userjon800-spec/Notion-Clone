@@ -12,7 +12,7 @@ export async function POST(req: Request) {
         customer: customer.id,
         return_url: `${public_domain}/documents`,
       });
-      return NextResponse.json({ status: false, url: portal.url });
+      return NextResponse.json({ status: true, url: portal.url });
     } else {
       return NextResponse.json({
         status: false,

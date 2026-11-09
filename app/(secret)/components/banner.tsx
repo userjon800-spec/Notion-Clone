@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -30,8 +30,8 @@ const Banner = ({ documentId }: BannerProps) => {
     router.push("/documents");
   };
   const onRestore = () => {
-    if (documents?.length && documents.length >= 3 && plan === "Free") {
-      toast.error("You can only create 3 documents in the free plan");
+    if (documents?.length && documents.length >= 7 && plan === "Free") {
+      toast.error("You can only create 7 documents in the free plan");
       return;
     }
     const promise = restore({ id: documentId });

@@ -1,13 +1,14 @@
 import fetcher from "@/lib/fetcher";
 import useSwr from "swr";
-export const useSubscription = (email: string) => {
+export const useSubscription = (email?: string) => {
+  const shouldFetch = Boolean(email && email !== "undefined");
   const { data, isLoading, mutate } = useSwr(
-    `/api/stripe/subscription?email=${email}`,
+    shouldFetch ? `/api/stripe/subscription?email=${email}` : null,
     fetcher,
   );
   return {
-    plan: data,
-    isLoading,
+    plan: data ?? "Free",
+    isLoading: shouldFetch ? isLoading : false,
     mutate,
   };
 };

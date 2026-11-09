@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
-import { SignInButton, useUser } from "@clerk/clerk-react";
+import { SignUpButton, useUser } from "@clerk/nextjs";
 import axios from "axios";
 import { useConvexAuth } from "convex/react";
 import { Check } from "lucide-react";
@@ -71,9 +71,9 @@ export function PricingCard({
         </Button>
       )}
       {!isAuthenticated && !isLoading && (
-        <SignInButton mode="modal">
+        <SignUpButton mode="modal" fallbackRedirectUrl="/documents">
           <Button>Log In</Button>
-        </SignInButton>
+        </SignUpButton>
       )}
       <ul role="list" className="space-y-4 text-left mt-8">
         {options.split(", ").map((option) => (

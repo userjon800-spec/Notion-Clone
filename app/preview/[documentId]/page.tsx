@@ -8,6 +8,7 @@ import { useQuery } from "convex/react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import "@blocknote/mantine/style.css";
 const Page = () => {
   const params = useParams();
   const document = useQuery(api.document.getDocumentById, {

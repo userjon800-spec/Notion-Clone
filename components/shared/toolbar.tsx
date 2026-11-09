@@ -98,7 +98,7 @@ const Toolbar = ({ document, preview }: ToolbarProps) => {
           </Button>
         )}
       </div>
-      {!isEditing && !preview ? (
+      {isEditing && !preview ? (
         <TextareaAutosize
           ref={textareaRef}
           onBlur={disableInput}

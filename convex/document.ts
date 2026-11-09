@@ -71,13 +71,13 @@ export const archive = mutation({
         await ctx.db.patch(child._id, {
           isArchived: true,
         });
-        archivedChildren(child._id);
+        await archivedChildren(child._id);
       }
     };
     const document = await ctx.db.patch(args.id, {
       isArchived: true,
     });
-    archivedChildren(args.id);
+    await archivedChildren(args.id);
     return document;
   },
 });
@@ -192,7 +192,7 @@ export const restore = mutation({
         await ctx.db.patch(child._id, {
           isArchived: false,
         });
-        unarchivedChildren(child._id);
+        await unarchivedChildren(child._id);
       }
     };
     const options: Partial<Doc<"documents">> = {
@@ -202,7 +202,7 @@ export const restore = mutation({
       options.parentDocument = undefined;
     }
     const document = await ctx.db.patch(args.id, options);
-    unarchivedChildren(args.id);
+    await unarchivedChildren(args.id);
     return document;
   },
 });

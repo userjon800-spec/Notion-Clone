@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useParams, useRouter } from "next/navigation";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import Loader from "@/components/ui/loader";
 import { useMediaQuery } from "usehooks-ts";
 import DocumentList from "./document-list";
@@ -101,8 +101,8 @@ const Sidebar = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMobile]);
   const onCreateDocument = () => {
-    if (documents?.length && documents.length >= 3 && plan === "Free") {
-      toast.error("You can only create 3 documents in the free plan");
+    if (documents?.length && documents.length >= 7 && plan === "Free") {
+      toast.error("You can only create 7 documents in the free plan");
       return;
     }
     const promise = createDocument({
@@ -183,7 +183,7 @@ const Sidebar = () => {
                 </div>
                 {plan === "Free" ? (
                   <p className="text-[13px] opacity-70">
-                    {documents?.length}/3
+                    {documents?.length}/7
                   </p>
                 ) : (
                   <p className="text-[13px] opacity-70">
@@ -194,9 +194,9 @@ const Sidebar = () => {
               {plan === "Free" && (
                 <Progress
                   value={
-                    documents?.length && documents.length >= 3
+                    documents?.length && documents.length >= 7
                       ? 100
-                      : (documents?.length || 0) * 33.33
+                      : ((documents?.length || 0) / 7) * 100
                   }
                   className="mt-2"
                 />

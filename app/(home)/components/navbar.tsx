@@ -4,7 +4,7 @@ import { Logo } from "./logo";
 import { ModeToggle } from "@/components/shared/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { UseScrolled } from "@/hooks/use-scrolled";
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 import { useConvexAuth } from "convex/react";
 import Link from "next/link";
 import Loader from "@/components/ui/loader";
@@ -23,14 +23,14 @@ export const Navbar = () => {
         {isLoading && <Loader />}
         {!isAuthenticated && !isLoading && (
           <>
-            <SignInButton mode="modal">
+            <SignInButton mode="modal" fallbackRedirectUrl="/documents">
               <Button size={"sm"} variant={"ghost"}>
                 Log In
               </Button>
             </SignInButton>
-            <SignInButton mode="modal">
+            <SignUpButton mode="modal" fallbackRedirectUrl="/documents">
               <Button size={"sm"}>Get Notion Free</Button>
-            </SignInButton>
+            </SignUpButton>
           </>
         )}
         {isAuthenticated && !isLoading && (

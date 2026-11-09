@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
-import { SignInButton } from "@clerk/nextjs";
+import { SignUpButton } from "@clerk/nextjs";
 import { useConvexAuth } from "convex/react";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -28,14 +28,14 @@ export function Hereos() {
               Enter notion <ArrowRight className="h-4 w-4 ml-2" />
             </Link>
           </Button>
-        )}{" "}
+        )}
         {!isAuthenticated && !isLoading && (
           <>
-            <SignInButton mode="modal">
+            <SignUpButton mode="modal" fallbackRedirectUrl="/documents">
               <Button>
                 Get Notion Free <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
-            </SignInButton>
+            </SignUpButton>
           </>
         )}
       </div>

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/ui/loader";
 import { api } from "@/convex/_generated/api";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { Plus } from "lucide-react";
 import Image from "next/image";
@@ -19,8 +19,8 @@ const DocumentPage = () => {
   const documents = useQuery(api.document.getAllDocuments);
   const createDocument = useMutation(api.document.createDocument);
   const onCreateDocument = () => {
-    if (documents?.length && documents.length >= 3 && plan === "Free") {
-      toast.error("You can only create 3 documents in the free plan");
+    if (documents?.length && documents.length >= 7 && plan === "Free") {
+      toast.error("You can only create 7 documents in the free plan");
       return;
     }
     const promise = createDocument({

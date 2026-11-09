@@ -1,5 +1,5 @@
 "use client";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -27,7 +27,7 @@ const SearchCommand = () => {
   };
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "i") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "i") {
         e.preventDefault();
         onToggle();
       }

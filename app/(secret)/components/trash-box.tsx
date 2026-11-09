@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import ConfirmModal from "@/components/modals/confirm-modal";
 import { Id } from "@/convex/_generated/dataModel";
 import { useSubscription } from "@/hooks/use-subscription";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 const TrashBox = () => {
   const router = useRouter();
   const params = useParams();
@@ -46,9 +46,9 @@ const TrashBox = () => {
     }
   };
   const onRestore = (documentId: Id<"documents">) => {
-    if (AllDocuments?.length && AllDocuments.length >= 3 && plan === "Free") {
+    if (AllDocuments?.length && AllDocuments.length >= 7 && plan === "Free") {
       toast.error(
-        "You already have 3 notes. Please delete one to restore this note.",
+        "You already have 7 notes. Please delete one to restore this note.",
       );
       return;
     }

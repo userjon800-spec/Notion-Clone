@@ -20,7 +20,13 @@ const Editor = ({ onChange, editable, initialContent }: EditorProps) => {
   const editor: BlockNoteEditor = useCreateBlockNote({
     editable,
     initialContent: initialContent
-      ? (JSON.parse(initialContent) as PartialBlock[])
+      ? (() => {
+          try {
+            return JSON.parse(initialContent) as PartialBlock[];
+          } catch {
+            return undefined;
+          }
+        })()
       : undefined,
     uploadFile: handleUpload,
   });

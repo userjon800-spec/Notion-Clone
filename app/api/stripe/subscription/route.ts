@@ -57,7 +57,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const email = searchParams.get("email");
-    if (!email) return NextResponse.json("Free");
+    if (!email || email === "undefined") return NextResponse.json("Free");
     const customer = await stripe.customers.list({ email: email });
     if (!customer.data.length) return NextResponse.json("Free");
     const subscriptions = await stripe.subscriptions.list({
@@ -65,6 +65,10 @@ export async function GET(req: Request) {
       expand: ["data.plan.product"],
     });
     if (!subscriptions.data.length) return NextResponse.json("Free");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const plan = subscriptions.data[0].plan as any;
+    const planName = plan?.product?.name || "Premium";
+    return NextResponse.json(planName);
   } catch (error) {
     return NextResponse.json(
       `Something went wrong. Please try again - ${error}`,

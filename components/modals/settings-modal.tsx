@@ -7,7 +7,7 @@ import { Button } from "../ui/button";
 import { Settings } from "lucide-react";
 import axios from "axios";
 import { toast } from "sonner";
-import { useUser } from "@clerk/clerk-react";
+import { useUser } from "@clerk/nextjs";
 import Loader from "../ui/loader";
 import { Label } from "../ui/label";
 export default function SettingsModal() {
@@ -24,6 +24,7 @@ export default function SettingsModal() {
       if (!data.status) {
         setIsSubmitting(false);
         toast.error("You are not subscribed to any plan.");
+        return;
       }
       window.open(data.url, "_self");
       setIsSubmitting(false);
@@ -34,7 +35,7 @@ export default function SettingsModal() {
   };
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "y") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "y") {
         e.preventDefault();
         onToggle();
       }
